@@ -6,6 +6,9 @@ const debug = require('debug')('memobird-cli');
 const Memobird = require('memobird');
 const getStdin = require('get-stdin');
 
+// https://github.com/sindresorhus/get-stdin/issues/21
+process.stdin.isTTY = false;
+
 const readToken = ({ tokenFile }) => {
   try {
     return JSON.parse(fs.readFileSync(tokenFile, 'utf-8').trim());
@@ -17,11 +20,16 @@ const readToken = ({ tokenFile }) => {
   }
 }
 
-const runText = async ({ message, file }, token) => {
+const runText = async ({ message, file }, token, todo) => {
   const memobird = new Memobird(token);
   await memobird.init();
-  const text = message || (file ? fs.readFileSync(file, 'utf-8') : await getStdin());
+  let text = message || (file ? fs.readFileSync(file, 'utf-8') : await getStdin());
   debug({ text });
+  if (todo)
+  {
+    text = text.replace(/(^|\n)(.)/g, '$1□ $2');
+    debug({ text });
+  }
   await memobird.printText(text);
 }
 
@@ -31,6 +39,15 @@ module.exports = yargRoot
     describe: 'Credential file for memobird',
     default: path.join(os.homedir(), '.memobird-cli'),
     type: 'string',
+  })
+  .command(['todo', '$0'], 'Print todo list from stdin', (yargs) => {
+  }, (argv) => {
+    const token = readToken(argv);
+    runText(argv, token, true).catch((e) => {
+      debug(e);
+      console.error(e);
+      process.exit(1);
+    });
   })
   .command(['text [-m <message> | -f <file>]', '$0'], 'Print text message', (yargs) => {
     yargs
@@ -47,7 +64,7 @@ module.exports = yargRoot
       .conflicts('m', 'f');
   }, (argv) => {
     const token = readToken(argv);
-    runText(argv, token).catch((e) => {
+    runText(argv, token, false).catch((e) => {
       debug(e);
       console.error(e);
       process.exit(1);

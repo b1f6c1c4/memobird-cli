@@ -11,12 +11,20 @@
 ## TL;DR
 
 ```sh
-npm i -g memobird-cli
+$ npm i -g memobird-cli
 # Put your credentials here
-vim ~/.memobird-cli
-echo 'hello world' | memo
-memo -m 'hello world'
-memo -f /etc/os-release
+$ vim ~/.memobird-cli
+$ memo -m 'hello world'
+$ memo -f /etc/os-release
+$ memo
+some random text
+some more random test
+^D
+$ memo todo
+todo item 1
+todo item 2
+todo item 3
+^D
 ```
 
 ## Installation
@@ -32,12 +40,13 @@ memo.js [-m <message> | -f <file>]
 Print text message
 
 Commands:
+  memo.js todo                             Print todo list from stdin
   memo.js text [-m <message> | -f <file>]  Print text message          [default]
 
 Options:
   --version      Show version number                                   [boolean]
   --token-file   Credential file for memobird
-                              [string] [default: "/home/b1f6c1c4/.memobird-cli"]
+                                       [string] [default: "$HOME/.memobird-cli"]
   --help         Show help                                             [boolean]
   -m, --message  Print this as literal                                  [string]
   -f, --file     Text file to be read from                              [string]
