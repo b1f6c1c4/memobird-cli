@@ -15,6 +15,8 @@ npm i -g memobird-cli
 # Put your credentials here
 vim ~/.memobird-cli
 echo 'hello world' | memo
+memo -m 'hello world'
+memo -f /etc/os-release
 ```
 
 ## Installation
@@ -24,4 +26,19 @@ $ npm install --global memobird-cli
 ```
 ## Usage
 
-TODO
+```
+memo.js [-m <message> | -f <file>]
+
+Print text message
+
+Commands:
+  memo.js text [-m <message> | -f <file>]  Print text message          [default]
+
+Options:
+  --version      Show version number                                   [boolean]
+  --token-file   Credential file for memobird
+                              [string] [default: "/home/b1f6c1c4/.memobird-cli"]
+  --help         Show help                                             [boolean]
+  -m, --message  Print this as literal                                  [string]
+  -f, --file     Text file to be read from                              [string]
+```
