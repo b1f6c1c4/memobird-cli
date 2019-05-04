@@ -4,7 +4,7 @@
   "description": "lpr for memobird",
   "main": "index.js",
   "bin": {
-      "memo": "./bin/memo.js"
+    "memo": "./bin/memo.js"
   },
   "repository": "https://github.com/b1f6c1c4/memobird-cli.git",
   "keywords": [
@@ -12,5 +12,11 @@
     "printer"
   ],
   "author": "b1f6c1c4 <b1f6c1c4@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "debug": "^4.1.1",
+    "get-stdin": "^7.0.0",
+    "memobird": "^0.5.2",
+    "yargs": "^13.2.2"
+  }
 }

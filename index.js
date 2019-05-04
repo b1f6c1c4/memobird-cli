@@ -3,7 +3,8 @@ const path = require('path');
 const fs = require('fs');
 const yargRoot = require('yargs');
 const debug = require('debug')('memobird-cli');
-const Table = require('cli-table');
+const Memobird = require('memobird');
+const getStdin = require('get-stdin');
 
 const readToken = ({ tokenFile }) => {
   try {
@@ -16,8 +17,12 @@ const readToken = ({ tokenFile }) => {
   }
 }
 
-const runText = async ({ text }, token) => {
-  // TODO
+const runText = async ({ file }, token) => {
+  const memobird = new Memobird(token);
+  await memobird.init();
+  const text = file ? fs.readFileSync(file, 'utf-8') : await getStdin();
+  debug({ text });
+  await memobird.printText(text);
 }
 
 module.exports = yargRoot
@@ -37,10 +42,7 @@ module.exports = yargRoot
     const token = readToken(argv);
     runText(argv, token).catch((e) => {
       debug(e);
-      console.error(e.message);
-      if (e.response) {
-        console.error(e.response.data);
-      }
+      console.error(e);
       process.exit(1);
     });
   })
