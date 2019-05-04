@@ -17,10 +17,10 @@ const readToken = ({ tokenFile }) => {
   }
 }
 
-const runText = async ({ file }, token) => {
+const runText = async ({ message, file }, token) => {
   const memobird = new Memobird(token);
   await memobird.init();
-  const text = file ? fs.readFileSync(file, 'utf-8') : await getStdin();
+  const text = message || (file ? fs.readFileSync(file, 'utf-8') : await getStdin());
   debug({ text });
   await memobird.printText(text);
 }
@@ -32,12 +32,19 @@ module.exports = yargRoot
     default: path.join(os.homedir(), '.memobird-cli'),
     type: 'string',
   })
-  .command(['text [<file>]', '$0'], 'Print text', (yargs) => {
+  .command(['text [-m <message> | -f <file>]', '$0'], 'Print text message', (yargs) => {
     yargs
-      .positional('file', {
-        describe: 'The file',
+      .option('m', {
+        alias: 'message',
+        describe: 'Print this as literal',
         type: 'string',
-      });
+      })
+      .option('f', {
+        alias: 'file',
+        describe: 'Text file to be read from',
+        type: 'string',
+      })
+      .conflicts('m', 'f');
   }, (argv) => {
     const token = readToken(argv);
     runText(argv, token).catch((e) => {
